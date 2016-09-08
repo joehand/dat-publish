@@ -57,6 +57,10 @@ module.exports = function (opts) {
     console.log('Finished receiving push. Key:', key)
   })
 
+  archiver.on('error', function (err) {
+    console.error(err)
+  })
+
   return {
     archiver: archiver,
     httpRequest: onrequest
