@@ -1,0 +1,31 @@
+{
+  "name": "dat-publish",
+  "version": "1.0.0",
+  "description": "Publish your dats to HTTP & Dat endpoints!",
+  "main": "index.js",
+  "bin": {
+    "dat-publish": "cli.js"
+  },
+  "scripts": {
+    "test": "standard"
+  },
+  "author": "Joe Hand <joe@hand.email> (https://joeahand.com/)",
+  "license": "MIT",
+  "dependencies": {
+    "crypto": "0.0.3",
+    "dat-archiver": "github:joehand/dat-archiver#add/get-archive",
+    "dat-js": "^3.3.1",
+    "hyperdrive-http": "^3.2.0",
+    "level-party": "^3.0.4",
+    "mkdirp": "^0.5.1"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joehand/dat-publish.git"
+  },
+  "bugs": {
+    "url": "https://github.com/joehand/dat-publish/issues"
+  },
+  "homepage": "https://github.com/joehand/dat-publish#readme"
+}
