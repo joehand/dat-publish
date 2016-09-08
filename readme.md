@@ -8,7 +8,7 @@ Uses [hyperdrive-http](https://github.com/joehand/hyperdrive-http) and [dat-arch
 
 * Run `dat-publish <server-key>` on your server. You can set your `<server-key>` or it will print one.
 * Create a dat on your local computer (or use an existing directory without a Dat).
-* `dat-push <server-key> [directory]` Push a dat/directory to your server with `<server-key>`.
+* `dat-push <server-key> [directory]`. Push a dat/directory to your server with `<server-key>`.
 * Your files will be available on your server over http!
 
 ### Public Dat Peer

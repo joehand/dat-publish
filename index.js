@@ -16,7 +16,7 @@ module.exports = function (opts, cb) {
     getArchive({key: key, type: 'archiver'}, cb)
   }})
   var onrequest = hyperdriveHttp(function (datInfo, cb) {
-    getArchive({key:datInfo.key, type: 'http'}, cb)
+    getArchive({key: datInfo.key, type: 'http'}, cb)
   })
 
   archiver.on('connection', function () {
@@ -44,7 +44,7 @@ module.exports = function (opts, cb) {
     var dir = path.join(datsDir, key)
     try {
       if (!fs.statSync(dir).isDirectory() && type === 'http') return console.error('No Archive found for http', key)
-    } catch (e) { if (type === 'http') return console.error('No Archive found for http', key)}
+    } catch (e) { if (type === 'http') return console.error('No Archive found for http', key) }
     mkdirp.sync(dir)
 
     var db = openDbs[key] || level(path.join(dir, '.dat'))

@@ -7,7 +7,7 @@ var args = require('minimist')(process.argv.splice(2), {
   alias: {d: 'discovery'},
   boolean: ['discovery'],
   default: {
-    port: 8000,
+    port: 8000
   }
 })
 
