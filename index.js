@@ -6,16 +6,42 @@ var hyperdriveHttp = require('hyperdrive-http')
 var Dat = require('dat-js')
 var level = require('level-party')
 
-module.exports = function (opts, cb) {
+module.exports = function (opts) {
   if (!opts) opts = {}
   var datsDir = opts.dir || path.join(process.cwd(), 'dats')
   var discovery = opts.discovery || false
+  var singleArchive = opts.archive || false
+  opts.index = opts.index && typeof opts.index !== 'string' ? 'index.html' : opts.index
+  var indexPage = singleArchive && opts.index ? opts.index : false
   var openDbs = {}
+
+  if (singleArchive && typeof singleArchive !== 'string') {
+    // check if we have mulitple folders
+    try {
+      var dats = fs.readdirSync(datsDir)
+      var count = 0
+      dats.forEach(function (dat) {
+        if (fs.statSync(path.join(datsDir, dat)).isDirectory()) {
+          count++
+          if (count > 1) throw new Error('More than one dat found. Specify key for single archive mode.')
+          singleArchive = dat
+        }
+      })
+    } catch (_) {
+      // no dats yet, set archive key later
+    }
+  }
 
   var archiver = Archiver({dir: datsDir, getArchive: function (key, cb) {
     getArchive({key: key, type: 'archiver'}, cb)
   }})
   var onrequest = hyperdriveHttp(function (datInfo, cb) {
+    if (!singleArchive && !datInfo.key) return cb(new Error('Not found'))
+    if (singleArchive && !datInfo.key) datInfo.key = singleArchive
+    if (singleArchive && indexPage) {
+      if(!datInfo.filename) datInfo.filename = indexPage
+      else if (datInfo.filename === 'metadata.json') datInfo.filename = null
+    }
     getArchive({key: datInfo.key, type: 'http'}, cb)
   })
 
@@ -43,9 +69,9 @@ module.exports = function (opts, cb) {
 
     var dir = path.join(datsDir, key)
     try {
-      if (!fs.statSync(dir).isDirectory() && type === 'http') return console.error('No Archive found for http', key)
-    } catch (e) { if (type === 'http') return console.error('No Archive found for http', key) }
-    mkdirp.sync(dir)
+      if (!fs.statSync(dir).isDirectory() && type === 'http') return cb(new Error('No Archive found for http', key))
+    } catch (e) { if (type === 'http') return cb(new Error('No Archive found for http', key)) }
+    if (type === 'archiver') mkdirp.sync(dir)
 
     var db = openDbs[key] || level(path.join(dir, '.dat'))
     var dat = Dat({
@@ -59,6 +85,7 @@ module.exports = function (opts, cb) {
       if (err) return cb(err)
       cb(null, dat.archive, function (err) {
         if (err) return cb(err)
+        if (singleArchive && typeof singleArchive !== 'string') singleArchive = key
         if (discovery) dat._joinSwarm() // TODO: I guess this makes sense?
         else dat.close()
       })

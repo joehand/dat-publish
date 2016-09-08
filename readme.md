@@ -6,7 +6,7 @@ Uses [hyperdrive-http](https://github.com/joehand/hyperdrive-http) and [dat-arch
 
 ### Serving Dat files over HTTP
 
-* Run `dat-publish <server-key>` on your server. You can set your `<server-key>` or it will print one.
+* Run `dat-publish` on your server. It will print a `<server-key>` for dat-archiver.
 * Create a dat on your local computer (or use an existing directory without a Dat).
 * `dat-push <server-key> [directory]`. Push a dat/directory to your server with `<server-key>`.
 * Your files will be available on your server over http!
@@ -34,6 +34,22 @@ dat-publish <server-key> [directory] --port=1234 --discovery
 * `port`: Port for http server
 * `discovery`: Public Dat peer. Join Dat swarm after a dat-push is finished.
 
+### Single Archive Options
+
+You can choose a single archive to serve at the root. This allows you to do things like publish a static website. By default it will serve `index.html` at the root and the filelist at `metadata.json`.
+
+If you have a single archive to publish, run:
+
+* `dat-publish server-key --single-archive`
+
+If you have multiple archives on your dat-archiver, you need to specify the archive key to serve as root:
+
+* `dat-publish server-key --archive=<dat-link>`
+
+To overwrite the index page, use the index option:
+
+* `dat-publish server-key --single-archive --index=foo.html`
+
 ## API 
 
 ### `var publish = datPublish({opts})``
@@ -44,6 +60,8 @@ Options include:
 {
   dir: process.cwd + '/dats', // directory to store dats received from dat-push
   discovery: false // join dat swarm after a completed dat-push
+  archive: <key>, // dat archive key to serve as root of http
+  index: 'index.html', // index page for single archive mode
 }
 ```
 
