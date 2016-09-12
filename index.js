@@ -10,12 +10,14 @@ module.exports = function (opts) {
   if (!opts) opts = {}
   var datsDir = opts.dir || path.join(process.cwd(), 'dats')
   var discovery = opts.discovery || false
-  var singleArchive = opts.archive || false
+  if (!discovery.upload && !discovery.download) discovery = false
+  var shareHttp = opts.http || true
+  var rootArchive = opts.rootArchive || false
   opts.index = opts.index && typeof opts.index !== 'string' ? 'index.html' : opts.index
-  var indexPage = singleArchive && opts.index ? opts.index : false
-  var openDbs = {}
+  var indexPage = rootArchive && opts.index ? opts.index : false
+  var openDats = {}
 
-  if (singleArchive && typeof singleArchive !== 'string') {
+  if (rootArchive && typeof rootArchive !== 'string') {
     // check if we have mulitple folders
     try {
       var dats = fs.readdirSync(datsDir)
@@ -23,8 +25,8 @@ module.exports = function (opts) {
       dats.forEach(function (dat) {
         if (fs.statSync(path.join(datsDir, dat)).isDirectory()) {
           count++
-          if (count > 1) throw new Error('More than one dat found. Specify key for single archive mode.')
-          singleArchive = dat
+          if (count > 1) throw new Error('More than one dat found. Specify key for root archive mode.')
+          rootArchive = dat
         }
       })
     } catch (_) {
@@ -36,9 +38,9 @@ module.exports = function (opts) {
     getArchive({key: key, type: 'archiver'}, cb)
   }})
   var onrequest = hyperdriveHttp(function (datInfo, cb) {
-    if (!singleArchive && !datInfo.key) return cb(new Error('Not found'))
-    if (singleArchive && !datInfo.key) datInfo.key = singleArchive
-    if (singleArchive && indexPage) {
+    if (!rootArchive && !datInfo.key) return cb(new Error('Not found'))
+    if (rootArchive && !datInfo.key) datInfo.key = rootArchive
+    if (rootArchive && indexPage) {
       if(!datInfo.filename) datInfo.filename = indexPage
       else if (datInfo.filename === 'metadata.json') datInfo.filename = null
     }
@@ -63,7 +65,7 @@ module.exports = function (opts) {
 
   return {
     archiver: archiver,
-    httpRequest: onrequest
+    httpRequest: shareHttp ? onrequest : undefined
   }
 
   function getArchive (opts, cb) {
@@ -77,22 +79,28 @@ module.exports = function (opts) {
     } catch (e) { if (type === 'http') return cb(new Error('No Archive found for http', key)) }
     if (type === 'archiver') mkdirp.sync(dir)
 
-    var db = openDbs[key] || level(path.join(dir, '.dat'))
-    var dat = Dat({
+    var dat = openDats[key]
+    if (dat) return done()
+
+    dat = Dat({
       dir: dir,
       key: key,
-      db: db,
+      db: level(path.join(dir, '.dat')),
       discovery: discovery
     })
     dat.open(function (err) {
-      openDbs[key] = dat.db
       if (err) return cb(err)
-      cb(null, dat.archive, function (err) {
-        if (err) return cb(err)
-        if (singleArchive && typeof singleArchive !== 'string') singleArchive = key
-        if (discovery) dat._joinSwarm() // TODO: I guess this makes sense?
-        else dat.close()
-      })
+      openDats[key] = dat
+      if (rootArchive && typeof rootArchive !== 'string') rootArchive = key
+      done()
     })
+
+    function done () {
+      cb(null, dat.archive, function (err) {
+        // Only happens on archiver push callback, not http
+        if (err) return cb(err)
+        if (discovery) dat._joinSwarm() // TODO: I guess this makes sense?
+      })
+    }
   }
 }

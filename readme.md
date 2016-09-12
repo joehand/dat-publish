@@ -34,13 +34,13 @@ dat-publish <server-key> [directory] --port=1234 --discovery
 * `port`: Port for http server
 * `discovery`: Public Dat peer. Join Dat swarm after a dat-push is finished.
 
-### Single Archive Options
+### Root Archive Options
 
 You can choose a single archive to serve at the root. This allows you to do things like publish a static website. By default it will serve `index.html` at the root and the filelist at `metadata.json`.
 
-If you have a single archive to publish, run:
+If you have a root archive to publish, run:
 
-* `dat-publish server-key --single-archive`
+* `dat-publish server-key --root-archive`
 
 If you have multiple archives on your dat-archiver, you need to specify the archive key to serve as root:
 
@@ -48,7 +48,7 @@ If you have multiple archives on your dat-archiver, you need to specify the arch
 
 To overwrite the index page, use the index option:
 
-* `dat-publish server-key --single-archive --index=foo.html`
+* `dat-publish server-key --root-archive --index=foo.html`
 
 ## API 
 
