@@ -57,6 +57,7 @@ module.exports = function (opts) {
 
   archiver.on('archive-finished', function (key) {
     console.log('Finished receiving push. Key:', key)
+    if (discovery) openDats[key]._joinSwarm() // TODO: I guess this makes sense?
   })
 
   archiver.on('error', function (err) {
@@ -96,11 +97,7 @@ module.exports = function (opts) {
     })
 
     function done () {
-      cb(null, dat.archive, function (err) {
-        // Only happens on archiver push callback, not http
-        if (err) return cb(err)
-        if (discovery) dat._joinSwarm() // TODO: I guess this makes sense?
-      })
+      cb(null, dat.archive)
     }
   }
 }
