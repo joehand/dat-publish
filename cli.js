@@ -5,13 +5,13 @@ var datPublish = require('.')
 
 var args = require('minimist')(process.argv.splice(2), {
   alias: {
-    d: 'dat', // dat discovery + upload
-    u: 'update-dat', // dat discovery + download (updates archive via dat)
+    d: 'dat-download', // dat discovery + download (updates archive via dat)
+    u: 'dat-upload', // dat discovery + upload
     h: 'http',
     r: 'root',
     i: 'index'
   },
-  boolean: ['dat', 'update-dat', 'http'],
+  boolean: ['dat-download', 'dat-upload', 'http'],
   default: {
     port: 8080,
     http: true
@@ -23,8 +23,8 @@ var publish = datPublish({
   dir: args._[1], // TODO: fix for using without key arg
   http: args.http,
   discovery: {
-    upload: args.dat,
-    download: args['update-dat']
+    upload: args['dat-upload'],
+    download: args['dat-download']
   },
   rootArchive: args.root,
   index: args.index

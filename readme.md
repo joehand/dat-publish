@@ -35,8 +35,8 @@ dat-publish [<server-key>] [directory]
 ### CLI Options
 
 * `--http`, `-h`: Share archive(s) via hyperdrive-http over port.
-* `--dat`, `-d`: Share via Dat peer. Join Dat swarm after a dat-push is finished, will only **upload** data, not download new data.
-* `--update-dat`, `-u`: Update dat from live source (dat share on your computer will update the server).
+* `--dat-upload`, `-u`: Share via Dat peer. Join Dat swarm after a dat-push is finished, will only **upload** data, not download new data.
+* `--dat-download`, `-d`: Update dat from live source (dat share on your computer will update the server).
 * `--root=<archive-key>`, `-r`: Archive key to serve as root archive.
 * `--index=file.html`, `-i`: Page to serve as index for archive(s). If not set, metadata will be served at root.
 * `--port=1234`: Port for http server
@@ -72,9 +72,13 @@ Options include:
 ```js
 {
   dir: process.cwd + '/dats', // directory to store dats received from dat-push
-  discovery: false // join dat swarm after a completed dat-push
-  archive: <key>, // dat archive key to serve as root of http
-  index: 'index.html', // index page for single archive mode
+  discovery: { // join dat swarm after a completed dat-push
+    upload: false, // Upload data to other peers
+    download: false // Download live updates from archive source
+  }
+  rootArchive: <key>, // dat archive key to serve as root of http
+  index: 'index.html', // index page for root archive mode
+  http: true // return onRequest function for http usage
 }
 ```
 
