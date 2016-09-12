@@ -26,13 +26,20 @@ npm install -g dat-publish
 ## Usage
 
 ```
-dat-publish <server-key> [directory] --port=1234 --discovery
+dat-publish [<server-key>] [directory]
 ```
 
-* `<server-key>` is the key for the [peer-network] server. This is a private key for you to push files to with dat-push.
+* Set `<server-key>` to *name* your sever. When using dat-push, you will push to this key. If you do not set a name, a 16 character key will be generated for you. Anyone with the key will be able to push to your server.
 * `directory`: store the dat directories. Each dat will be stored in a folder with it's key as the name.
-* `port`: Port for http server
-* `discovery`: Public Dat peer. Join Dat swarm after a dat-push is finished.
+
+### CLI Options
+
+* `--http`, `-h`: Share archive(s) via hyperdrive-http over port.
+* `--dat`, `-d`: Share via Dat peer. Join Dat swarm after a dat-push is finished, will only **upload** data, not download new data.
+* `--update-dat`, `-u`: Update dat from live source (dat share on your computer will update the server).
+* `--root=<archive-key>`, `-r`: Archive key to serve as root archive.
+* `--index=file.html`, `-i`: Page to serve as index for archive(s). If not set, metadata will be served at root.
+* `--port=1234`: Port for http server
 
 ### Root Archive Options
 
@@ -40,15 +47,21 @@ You can choose a single archive to serve at the root. This allows you to do thin
 
 If you have a root archive to publish, run:
 
-* `dat-publish server-key --root-archive`
+* `dat-publish my-server-name --root`
 
 If you have multiple archives on your dat-archiver, you need to specify the archive key to serve as root:
 
-* `dat-publish server-key --archive=<dat-link>`
+* `dat-publish my-server-name --root=<dat-link>`
 
-To overwrite the index page, use the index option:
+### Index Page
 
-* `dat-publish server-key --root-archive --index=foo.html`
+To show `index.html` as the index page for all archives, use the `--index` option:
+
+* `dat-publish my-server-name --root --index`
+
+To overwrite the index page for all archives, set the index to the page name:
+
+* `dat-publish my-server-name --root --index=foo.html`
 
 ## API 
 

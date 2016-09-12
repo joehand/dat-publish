@@ -20,7 +20,7 @@ var args = require('minimist')(process.argv.splice(2), {
 
 var server = http.createServer()
 var publish = datPublish({
-  dir: args._[1],
+  dir: args._[1], // TODO: fix for using without key arg
   http: args.http,
   discovery: {
     upload: args.dat,
