@@ -65,7 +65,7 @@ To overwrite the index page for all archives, set the index to the page name:
 
 ## API 
 
-### `var publish = datPublish({opts})``
+### `var publish = datPublish({opts})`
 
 Options include: 
 
@@ -75,7 +75,7 @@ Options include:
   discovery: { // join dat swarm after a completed dat-push
     upload: false, // Upload data to other peers
     download: false // Download live updates from archive source
-  }
+  },
   rootArchive: <key>, // dat archive key to serve as root of http
   index: 'index.html', // index page for root archive mode
   http: true // return onRequest function for http usage

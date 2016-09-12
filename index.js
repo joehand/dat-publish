@@ -41,7 +41,7 @@ module.exports = function (opts) {
     if (!rootArchive && !datInfo.key) return cb(new Error('Not found'))
     if (rootArchive && !datInfo.key) datInfo.key = rootArchive
     if (rootArchive && indexPage) {
-      if(!datInfo.filename) datInfo.filename = indexPage
+      if (!datInfo.filename) datInfo.filename = indexPage
       else if (datInfo.filename === 'metadata.json') datInfo.filename = null
     }
     getArchive({key: datInfo.key, type: 'http'}, cb)
