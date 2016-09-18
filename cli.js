@@ -4,30 +4,41 @@ var crypto = require('crypto')
 var datPublish = require('.')
 
 var args = require('minimist')(process.argv.splice(2), {
-  alias: {d: 'discovery', s: 'single-archive', a: 'archive', i: 'index'},
-  boolean: ['discovery', 'single-archive'],
+  alias: {
+    d: 'dat-download', // dat discovery + download (updates archive via dat)
+    u: 'dat-upload', // dat discovery + upload
+    h: 'http',
+    r: 'root',
+    i: 'index'
+  },
+  boolean: ['dat-download', 'dat-upload', 'http'],
   default: {
-    port: 8000
+    port: 8080,
+    http: true
   }
 })
 
-if (args['single-archive']) args.archive = true
-
 var server = http.createServer()
 var publish = datPublish({
-  dir: args._[1],
-  discovery: args.discovery,
-  archive: args.archive,
+  dir: args._[1], // TODO: fix for using without key arg
+  http: args.http,
+  discovery: {
+    upload: args['dat-upload'],
+    download: args['dat-download']
+  },
+  rootArchive: args.root,
   index: args.index
 })
 
 var key = args._[0] || crypto.randomBytes(16).toString('hex')
 publish.archiver.join(key)
-server.listen(args.port)
-server.once('error', function () {
-  server.listen(0)
-})
-server.on('request', publish.httpRequest)
-
 console.log(`dat-archiver listening on ${key}`)
-console.log(`hyperdrive-http listening on ${args.port}`)
+
+if (args.http) {
+  server.listen(args.port)
+  server.once('error', function () {
+    server.listen(0)
+  })
+  server.on('request', publish.httpRequest)
+  console.log(`hyperdrive-http listening on ${args.port}`)
+}
