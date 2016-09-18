@@ -7,7 +7,7 @@
     "dat-publish": "cli.js"
   },
   "scripts": {
-    "test": "standard"
+    "test": "standard && tape tests/*.js | tap-spec"
   },
   "author": "Joe Hand <joe@hand.email> (https://joeahand.com/)",
   "license": "MIT",
@@ -19,7 +19,13 @@
     "level-party": "^3.0.4",
     "mkdirp": "^0.5.1"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "ndjson": "^1.4.3",
+    "request": "^2.74.0",
+    "rimraf": "^2.5.4",
+    "tape": "^4.6.0",
+    "tape-spawn": "^1.4.2"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/joehand/dat-publish.git"
