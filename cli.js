@@ -11,12 +11,22 @@ var args = require('minimist')(process.argv.splice(2), {
     r: 'root',
     i: 'index'
   },
-  boolean: ['dat-download', 'dat-upload', 'http'],
+  boolean: ['dat-download', 'dat-upload', 'http', 'webrtc'],
   default: {
     port: 8080,
     http: true
   }
 })
+
+if (args.webrtc) {
+  try {
+    var webrtc = require('electron-webrtc')()
+  } catch (e) {
+    console.error('npm install electron-webrtc to use webrtc option')
+    process.exit(1)
+  }
+}
+
 
 var server = http.createServer()
 var publish = datPublish({
@@ -27,7 +37,8 @@ var publish = datPublish({
     download: args['dat-download']
   },
   rootArchive: args.root,
-  index: args.index
+  index: args.index,
+  webrtc: webrtc
 })
 
 var key = args._[0] || crypto.randomBytes(16).toString('hex')

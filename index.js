@@ -58,6 +58,7 @@ module.exports = function (opts) {
   archiver.on('archive-finished', function (key) {
     console.log('Finished receiving push. Key:', key)
     if (discovery) openDats[key]._joinSwarm() // TODO: I guess this makes sense?
+    else openDats[key].db.close()
   })
 
   archiver.on('error', function (err) {
@@ -87,7 +88,8 @@ module.exports = function (opts) {
       dir: dir,
       key: key,
       db: level(path.join(dir, '.dat')),
-      discovery: discovery
+      discovery: discovery,
+      webrtc: opts.webrtc
     })
     dat.open(function (err) {
       if (err) return cb(err)
