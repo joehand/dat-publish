@@ -26,11 +26,18 @@ npm install -g dat-publish
 ## Usage
 
 ```
-dat-publish [<server-key>] [directory]
+dat-publish [<server-key>] [directory] [opts]
 ```
 
 * Set `<server-key>` to *name* your sever. When using dat-push, you will push to this key. If you do not set a name, a 16 character key will be generated for you. Anyone with the key will be able to push to your server.
 * `directory`: store the dat directories. Each dat will be stored in a folder with it's key as the name.
+
+To enable the http server, include `-h`.
+To enable uploading and downloading on the dat network, include `-u` and `-d`, respectively.
+
+```
+dat-publish -duh
+```
 
 ### CLI Options
 
