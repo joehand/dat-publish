@@ -14,7 +14,7 @@ var args = require('minimist')(process.argv.splice(2), {
   boolean: ['dat-download', 'dat-upload', 'http', 'webrtc'],
   default: {
     port: 8080,
-    http: true
+    http: false
   }
 })
 
